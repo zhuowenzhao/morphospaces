@@ -1,0 +1,26 @@
+name: my-test
+image: mosaicml/pytorch:latest
+compute:
+  gpus: 8
+  cluster: r14z3p1
+integrations:
+  - integration_type: pip_packages
+    packages:
+      - mrcfile
+      - pyqt5
+      - requests==2.24.0
+  - integration_type: git_repo
+    git_repo: zhuowenzhao/morphospaces
+    git_branch: mosaic_cryoet
+    pip_install: .
+command: |-
+  echo running
+  cd morphospaces
+  python examples/pixel_embedding/train_swin_unetr_embedding_mrc.py \
+    -p s3://czii-mosaicml-storage/embeddings/pretrained/model_swinvit.pt \
+    -td s3://czii-mosaicml-storage/embeddings/train/tomograms/ \
+    -tm s3://czii-mosaicml-storage/embeddings/train/masks/ \
+    -vd s3://czii-mosaicml-storage/embeddings/eval/tomograms/ \
+    -vm s3://czii-mosaicml-storage/embeddings/eval/masks/ \
+    --logdir s3://czii-mosaicml-storage/User_outputs/Users/kevin.zhao/checkpoints/ 
+  echo done

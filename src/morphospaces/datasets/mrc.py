@@ -1,7 +1,10 @@
 import glob
 import dask.array as da
 import mrcfile
+from mrcfile.mrcinterpreter import MrcInterpreter
 import numpy as np
+import s3fs
+from data_handler import MrcFile
 
 from morphospaces.datasets._base import BaseTiledDataset
 
@@ -17,7 +20,6 @@ class MrcDataset(BaseTiledDataset):
     Implementation of the mrc dataset that loads both image mrcfiles and their corresponding maskmrc files into numpy arrays, \
     constructing a map-style dataset, such as {'mrc_tomogram': Array([...], dtype=np.float32), 'mrc_mask': Array([...], dtype=np.float32)}.
     """
-
     def __init__(
         self,
         mrcfile_path: dict, # {'mrc_tomogram': path_to_raw_data, 'mrc_mask': path_to_label_mask}
@@ -61,7 +63,7 @@ class MrcDataset(BaseTiledDataset):
     @staticmethod
     def get_array(file_path, key):
         if key == 'mrc_mask' or 'mrc_tomo':
-            ds = mrcfile.read(file_path)
+            ds = MrcFile.read(file_path)
             return ds.astype(np.float32)  # both data and label are float32
 
 
@@ -85,10 +87,11 @@ class MrcDataset(BaseTiledDataset):
         store_unique_label_values: bool = False,
     ):
         
-        n = len(glob.glob(list(glob_pattern.values())[0]))
+
+        n = len(MrcFile.glob(list(glob_pattern.values())[0]))
         mrcfile_paths = [dict()] * n # List[dict]        
         for key, path in glob_pattern.items():
-            file_paths = glob.glob(path)
+            file_paths = MrcFile.glob(path)
             assert len(file_paths) == n, 'The number of tomogram mrc files is not the same as the number of label mask files'
             for i,path in enumerate(file_paths):
                 mrcfile_paths[i][key] = path

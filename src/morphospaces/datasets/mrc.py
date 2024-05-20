@@ -1,9 +1,4 @@
-import glob
-import dask.array as da
-import mrcfile
-from mrcfile.mrcinterpreter import MrcInterpreter
 import numpy as np
-import s3fs
 from data_handler import MrcFile
 
 from morphospaces.datasets._base import BaseTiledDataset

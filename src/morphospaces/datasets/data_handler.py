@@ -1,9 +1,7 @@
 import s3fs 
 import glob
-import dask.array as da
 import mrcfile
 from mrcfile.mrcinterpreter import MrcInterpreter
-import numpy as np
 
 from typing import Dict, List, Tuple, Union
 from numpy.typing import ArrayLike

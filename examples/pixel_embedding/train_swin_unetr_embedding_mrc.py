@@ -65,10 +65,10 @@ if __name__ == "__main__":
 
     image_key = "mrc_tomogram"
     labels_key = "mrc_mask"
-    train_data_pattern =  {image_key: train_tomogram_path+'/*.mrc',
-                           labels_key: train_mask_path+'/*.mrc'}
-    val_data_pattern =  {image_key: val_tomogram_path+'/*.mrc',
-                        labels_key: val_mask_path+'/*.mrc'}
+    train_data_pattern =  {image_key: train_tomogram_path+'*.mrc',
+                           labels_key: train_mask_path+'*.mrc'}
+    val_data_pattern =  {image_key: val_tomogram_path+'*.mrc',
+                        labels_key: val_mask_path+'*.mrc'}
 
 
     print(f'train_data_pattern {train_data_pattern}')

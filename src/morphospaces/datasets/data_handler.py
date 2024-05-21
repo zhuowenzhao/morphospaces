@@ -16,7 +16,7 @@ class MrcFile:
     
     @staticmethod
     def read(file_path):
-        if file_path.startwith('s3://'):
+        if file_path.startswith('s3://'):
             s3 = s3fs.S3FileSystem()
             with s3.open(file_path, 'rb') as f:
                 ds = MrcInterpreter(iostream=f, permissive=True).data.copy()
@@ -26,7 +26,7 @@ class MrcFile:
     
     @staticmethod
     def glob(glob_pattern):
-        if glob_pattern.values()[0].startswith('s3://'):
+        if glob_pattern.startswith('s3://'):
             s3 = s3fs.S3FileSystem()
             return ['s3://' + fp for fp in s3.glob(glob_pattern)]
         else:

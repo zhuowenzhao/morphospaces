@@ -1,6 +1,5 @@
 import numpy as np
-from data_handler import MrcFile
-
+from morphospaces.datasets.data_handler import MrcFile
 from morphospaces.datasets._base import BaseTiledDataset
 
 

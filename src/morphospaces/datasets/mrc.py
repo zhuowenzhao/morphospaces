@@ -62,6 +62,8 @@ class MrcDataset(BaseTiledDataset):
     def get_array(file_path, key):
         if key == 'mrc_mask' or 'mrc_tomo':
             ds = mrcfile.read(file_path)
+            if key == 'mrc_mask':
+                ds[0,0,:] = -1
             return ds.astype(np.float32)  # both data and label are float32
 
 

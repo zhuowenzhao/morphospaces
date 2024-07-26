@@ -25,24 +25,25 @@ def sample_random_features(features, labels, num_samples_per_class=10):
     sampled_feats = []
     sampled_labels = []
     for label in unique_labels:
-        label_feats = features[labels == label]
-        if label_feats.size(0) > num_samples_per_class:
-            idx = torch.randperm(label_feats.size(0))[:num_samples_per_class]
-            sampled_feats.append(label_feats[idx])
-            sampled_labels.append(
-                label
-                * torch.ones(
-                    num_samples_per_class, device=device, dtype=torch.long
+        if label != -1:
+            label_feats = features[labels == label]
+            if label_feats.size(0) > num_samples_per_class:
+                idx = torch.randperm(label_feats.size(0))[:num_samples_per_class]
+                sampled_feats.append(label_feats[idx])
+                sampled_labels.append(
+                    label
+                    * torch.ones(
+                        num_samples_per_class, device=device, dtype=torch.long
+                    )
                 )
-            )
-        else:
-            sampled_feats.append(label_feats)
-            sampled_labels.append(
-                label
-                * torch.ones(
-                    label_feats.size(0), device=device, dtype=torch.long
+            else:
+                sampled_feats.append(label_feats)
+                sampled_labels.append(
+                    label
+                    * torch.ones(
+                        label_feats.size(0), device=device, dtype=torch.long
+                    )
                 )
-            )
 
     sampled_feats = torch.cat(sampled_feats, dim=0)
     sampled_labels = torch.cat(sampled_labels, dim=0)

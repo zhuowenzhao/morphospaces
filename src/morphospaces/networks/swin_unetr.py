@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Tuple
 
 import pytorch_lightning as pl
 import torch
-from monai.losses import DiceCELoss
+from monai.losses import DiceCELoss, MaskedDiceLoss
 from monai.metrics import DiceMetric
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
@@ -88,7 +88,8 @@ class PixelEmbeddingSwinUNETR(pl.LightningModule):
             # update the model
             self._model.load_from(weights)
 
-        self.segmentation_loss = DiceCELoss(to_onehot_y=True, softmax=True)
+        #self.segmentation_loss = DiceCELoss(to_onehot_y=True, softmax=True)
+        self.segmentation_loss = MaskedDiceLoss(to_onehot_y=True, softmax=True)
         self.contrastive_loss = NCELoss(
             temperature=self.hparams.loss_temperature
         )
@@ -161,7 +162,13 @@ class PixelEmbeddingSwinUNETR(pl.LightningModule):
         embeddings, logits = self._model.training_forward(images)
 
         # compute the loss
-        segmentation_loss = self.segmentation_loss(logits, labels)
+        mask = torch.ones(labels.shape)
+        mask[0,0,:] = 0
+        if labels.is_cuda:
+            mask = mask.to(device='cuda')
+        else:
+            mask = mask.to(device='cpu')
+        segmentation_loss = self.segmentation_loss(logits, labels, mask)
 
         (
             embedding_loss,
@@ -213,7 +220,13 @@ class PixelEmbeddingSwinUNETR(pl.LightningModule):
         embeddings, logits = self._model.training_forward(images)
 
         # compute the loss
-        segmentation_loss = self.segmentation_loss(logits, labels)
+        mask = torch.ones(labels.shape)
+        mask[0,0,:] = 0
+        if labels.is_cuda:
+            mask = mask.to(device='cuda')
+        else:
+            mask = mask.to(device='cpu')
+        segmentation_loss = self.segmentation_loss(logits, labels, mask)
 
         (
             embedding_loss,

@@ -136,7 +136,7 @@ class FilterSliceBuilder(SliceBuilder):
 
         # filter slices with less than the requested volume fraction
         # of non-ignore_index
-        self._slices = list(filter(ignore_predicate, filter(self._is_within_bounds, self.slices)))
+        self._slices = list(filter(ignore_predicate, filter(lambda seq: self._is_within_bounds(seq, dataset.shape), self.slices)))
 
 
 class PatchManager:
